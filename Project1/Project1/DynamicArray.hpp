@@ -87,7 +87,7 @@ public:
 		std::cout << "erase_unordered" << index << std::endl;
 		data[index].~T();
 		data[index] = data[_size - 1];
-		data[_size - 1] = nullptr;
+		//data[_size - 1] = nullptr;
 		--_size;
 	}
 
