@@ -1,4 +1,5 @@
 #include <iostream>
+#include <functional>
 #include "DynamicArray.hpp"
 #include "windows.h"
 
@@ -9,8 +10,7 @@ LARGE_INTEGER timer, start, end;
 float deltaTime1 = 0;
 float deltaTime2 = 0;
 
-template <typename T>
-void eraseFunction(DynamicArray<T>& arr)
+void eraseFunction(DynamicArray<dataType>& arr)
 {
 	for (int i = 0; i < testSize; i++)
 	{
@@ -18,8 +18,7 @@ void eraseFunction(DynamicArray<T>& arr)
 	}
 }
 
-template <typename T>
-void erase_unorderedFunction(DynamicArray<T>& arr)
+void erase_unorderedFunction(DynamicArray<dataType>& arr)
 {
 	for (int i = 0; i < testSize; i++)
 	{
@@ -27,7 +26,7 @@ void erase_unorderedFunction(DynamicArray<T>& arr)
 	}
 }
 
-float Test_erase(DynamicArray<dataType>& arr)
+float TestFunction(DynamicArray<dataType>& arr, std::function<void(DynamicArray<dataType>&)> f)
 {
 	for (int i = 0; i < testSize; i++)
 	{
@@ -35,21 +34,7 @@ float Test_erase(DynamicArray<dataType>& arr)
 	}
 
 	QueryPerformanceCounter(&start);
-	eraseFunction<dataType>(arr);
-	QueryPerformanceCounter(&end);
-
-	return (float)(end.QuadPart - start.QuadPart) / timer.QuadPart;
-}
-
-float Test_erase_unordered(DynamicArray<dataType>& arr)
-{
-	for (int i = 0; i < testSize; i++)
-	{
-		arr.push_back(2000);
-	}
-
-	QueryPerformanceCounter(&start);
-	erase_unorderedFunction<dataType>(arr);
+	f(arr);
 	QueryPerformanceCounter(&end);
 
 	return (float)(end.QuadPart - start.QuadPart) / timer.QuadPart;
@@ -62,8 +47,8 @@ int main()
 
 	DynamicArray<dataType> arr;
 
-	deltaTime1 = Test_erase(arr);
-	deltaTime2 = Test_erase_unordered(arr);
+	deltaTime1 = TestFunction(arr, eraseFunction);
+	deltaTime2 = TestFunction(arr, erase_unorderedFunction);
 
 	std::cout << "\neraseFunction<dataType>(arr) : " << deltaTime1 << " microseconds\n\n";
 	std::cout << "erase_unorderedFunction<dataType>(arr) : " << deltaTime2 << " microseconds\n\n";
