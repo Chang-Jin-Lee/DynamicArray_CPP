@@ -82,7 +82,14 @@ public:
 		--_size;
 	}
 
-	//void erase_unordered(size_t index)
+	void erase_unordered(size_t index)
+	{
+		std::cout << "erase_unordered" << index << std::endl;
+		data[index].~T();
+		data[index] = data[_size - 1];
+		data[_size - 1] = nullptr;
+		--_size;
+	}
 
 
 	T& operator[](size_t index)
